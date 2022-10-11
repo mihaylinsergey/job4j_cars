@@ -1,6 +1,6 @@
 package ru.job4j.cars.model;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Data;
 
 @Entity

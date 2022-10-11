@@ -1,12 +1,9 @@
 package ru.job4j.cars.repository;
 
 import lombok.AllArgsConstructor;
-import net.bytebuddy.description.type.RecordComponentList;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import ru.job4j.cars.model.User;
-
-import javax.management.Query;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
