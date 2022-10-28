@@ -37,9 +37,18 @@ public class UserRepository {
      */
     public void update(User user) {
         Session session = sf.openSession();
+        int id = findByLogin(user
+                .getLogin())
+                .get()
+                .getId();
         try {
             session.beginTransaction();
-            session.update(user);
+            session.createQuery(
+                            "UPDATE User SET login = :fLogin, password = :fPassword WHERE id = :fId")
+                    .setParameter("fLogin", user.getLogin())
+                    .setParameter("fPassword", user.getPassword())
+                    .setParameter("fId", id)
+                    .executeUpdate();
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
