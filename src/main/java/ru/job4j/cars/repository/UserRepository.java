@@ -6,6 +6,7 @@ import org.hibernate.SessionFactory;
 import ru.job4j.cars.model.User;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -26,8 +27,9 @@ public class UserRepository {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
-        session.close();
         return user;
     }
 
@@ -37,23 +39,30 @@ public class UserRepository {
      */
     public void update(User user) {
         Session session = sf.openSession();
-        int id = findByLogin(user
-                .getLogin())
-                .get()
-                .getId();
         try {
-            session.beginTransaction();
-            session.createQuery(
-                            "UPDATE User SET login = :fLogin, password = :fPassword WHERE id = :fId")
-                    .setParameter("fLogin", user.getLogin())
-                    .setParameter("fPassword", user.getPassword())
-                    .setParameter("fId", id)
-                    .executeUpdate();
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            session.getTransaction().rollback();
+            int id = findByLogin(user
+                    .getLogin())
+                    .get()
+                    .getId();
+            try {
+
+                session.beginTransaction();
+                session.createQuery(
+                                "UPDATE User SET login = :fLogin, password = :fPassword WHERE id = :fId")
+                        .setParameter("fLogin", user.getLogin())
+                        .setParameter("fPassword", user.getPassword())
+                        .setParameter("fId", id)
+                        .executeUpdate();
+                session.getTransaction().commit();
+            } catch (Exception e) {
+                session.getTransaction().rollback();
+            } finally {
+                session.close();
+            }
+        } catch (NoSuchElementException e) {
+            session.close();
+            e.printStackTrace();
         }
-        session.close();
     }
 
     /**
@@ -71,8 +80,10 @@ public class UserRepository {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
-        session.close();
+
     }
 
     /**
@@ -88,8 +99,9 @@ public class UserRepository {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
-        session.close();
         return result;
     }
 
@@ -106,8 +118,9 @@ public class UserRepository {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
-        session.close();
         return result;
     }
 
@@ -116,7 +129,7 @@ public class UserRepository {
      * @param key key
      * @return список пользователей.
      */
-    public List<User> findByLikeLogin(String key) {
+    public List<User> findByLoginLike(String key) {
         Session session = sf.openSession();
         List<User> result = new ArrayList<>();
         try {
@@ -126,8 +139,10 @@ public class UserRepository {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
-        session.close();
+
         return result;
     }
 
@@ -147,8 +162,10 @@ public class UserRepository {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
+        } finally {
+            session.close();
         }
-        session.close();
+
         return result;
     }
 }
