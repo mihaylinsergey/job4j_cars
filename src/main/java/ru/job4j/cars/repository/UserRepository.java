@@ -39,13 +39,13 @@ public class UserRepository {
      */
     public void update(User user) {
         Session session = sf.openSession();
+        Optional<User> userOptional = findByLogin(user.getLogin());
+        if (userOptional.isEmpty()) {
+            session.close();
+            throw new NoSuchElementException("User with this login is not found");
+        }
+        int id = userOptional.get().getId();
         try {
-            int id = findByLogin(user
-                    .getLogin())
-                    .get()
-                    .getId();
-            try {
-
                 session.beginTransaction();
                 session.createQuery(
                                 "UPDATE User SET login = :fLogin, password = :fPassword WHERE id = :fId")
@@ -54,14 +54,10 @@ public class UserRepository {
                         .setParameter("fId", id)
                         .executeUpdate();
                 session.getTransaction().commit();
-            } catch (Exception e) {
+        } catch (Exception e) {
                 session.getTransaction().rollback();
-            } finally {
+        } finally {
                 session.close();
-            }
-        } catch (NoSuchElementException e) {
-            session.close();
-            e.printStackTrace();
         }
     }
 
