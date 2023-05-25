@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS auto_user (
     password TEXT
 );
 
-CREATE TABLE IF NOT EXISTS auto_post (
+CREATE TABLE IF NOT EXISTS AUTO_POST (
     id SERIAL PRIMARY KEY,
     text TEXT,
     created DATE,
