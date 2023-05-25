@@ -4,13 +4,15 @@ import lombok.AllArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import ru.job4j.cars.model.User;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @AllArgsConstructor
 public class UserRepository {
 
-    private final CrudRepository crudRepository;
+    private final SessionFactory sf;
 
     /**
      * Сохранить в базе.
@@ -18,7 +20,16 @@ public class UserRepository {
      * @return пользователь с id.
      */
     public User create(User user) {
-        crudRepository.run(session -> session.persist(user));
+        Session session = sf.openSession();
+        try {
+            session.beginTransaction();
+            session.save(user);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            session.close();
+        }
         return user;
     }
 
@@ -27,7 +38,27 @@ public class UserRepository {
      * @param user пользователь.
      */
     public void update(User user) {
-        crudRepository.run(session -> session.merge(user));
+        Session session = sf.openSession();
+        Optional<User> userOptional = findByLogin(user.getLogin());
+        if (userOptional.isEmpty()) {
+            session.close();
+            throw new NoSuchElementException("User with this login is not found");
+        }
+        int id = userOptional.get().getId();
+        try {
+                session.beginTransaction();
+                session.createQuery(
+                                "UPDATE User SET login = :fLogin, password = :fPassword WHERE id = :fId")
+                        .setParameter("fLogin", user.getLogin())
+                        .setParameter("fPassword", user.getPassword())
+                        .setParameter("fId", id)
+                        .executeUpdate();
+                session.getTransaction().commit();
+        } catch (Exception e) {
+                session.getTransaction().rollback();
+        } finally {
+                session.close();
+        }
     }
 
     /**
@@ -35,10 +66,20 @@ public class UserRepository {
      * @param userId ID
      */
     public void delete(int userId) {
-        crudRepository.run(
-                "delete from User where id = :fId",
-                Map.of("fId", userId)
-        );
+        Session session = sf.openSession();
+        try {
+            session.beginTransaction();
+            session.createQuery(
+                            "DELETE User WHERE id = :fId")
+                    .setParameter("fId", userId)
+                    .executeUpdate();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            session.close();
+        }
+
     }
 
     /**
@@ -46,18 +87,37 @@ public class UserRepository {
      * @return список пользователей.
      */
     public List<User> findAllOrderById() {
-        return crudRepository.query("from User order by id asc", User.class);
+        Session session = sf.openSession();
+        List<User> result = new ArrayList<>();
+        try {
+            session.beginTransaction();
+            result = session.createQuery("from User ORDER BY id").list();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            session.close();
+        }
+        return result;
     }
 
     /**
      * Найти пользователя по ID
      * @return пользователь.
      */
-    public Optional<User> findById(int userId) {
-        return crudRepository.optional(
-                "from User where id = :fId", User.class,
-                Map.of("fId", userId)
-        );
+    public Optional<User> findById(Integer id) {
+        Session session = sf.openSession();
+        Optional<User> result = Optional.empty();
+        try {
+            session.beginTransaction();
+            result = Optional.of(session.get(User.class, id));
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            session.close();
+        }
+        return result;
     }
 
     /**
@@ -65,11 +125,21 @@ public class UserRepository {
      * @param key key
      * @return список пользователей.
      */
-    public List<User> findByLikeLogin(String key) {
-        return crudRepository.query(
-                "from User where login like :fKey", User.class,
-                Map.of("fKey", "%" + key + "%")
-        );
+    public List<User> findByLoginLike(String key) {
+        Session session = sf.openSession();
+        List<User> result = new ArrayList<>();
+        try {
+            session.beginTransaction();
+            result = session.createQuery(
+                    "from User as i where i.login like %" + key + "%", User.class).list();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            session.close();
+        }
+
+        return result;
     }
 
     /**
@@ -78,9 +148,20 @@ public class UserRepository {
      * @return Optional or user.
      */
     public Optional<User> findByLogin(String login) {
-        return crudRepository.optional(
-                "from User where login = :fLogin", User.class,
-                Map.of("fLogin", login)
-        );
+        Session session = sf.openSession();
+        Optional<User> result = Optional.empty();
+        try {
+            session.beginTransaction();
+            result = Optional.of(session.createQuery(
+                            "from User as i where i.login = :fLogin", User.class)
+                    .setParameter("fLogin", login).uniqueResult());
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            session.close();
+        }
+
+        return result;
     }
 }
