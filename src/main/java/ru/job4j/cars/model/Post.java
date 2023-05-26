@@ -4,6 +4,8 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "auto_post")
@@ -20,5 +22,5 @@ public class Post {
     private User user;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "price_history_id")
-    private PriceHistory priceHistory;
+    private List<PriceHistory> priceHistory = new ArrayList<>();
 }

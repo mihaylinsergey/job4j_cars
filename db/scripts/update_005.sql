@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS PRICE_HISTORY(
    after BIGINT not null,
    created TIMESTAMP WITHOUT TIME ZONE DEFAULT now(),
    price_history_id int,
-    FOREIGN KEY (price_history_id) REFERENCES auto_post(id)
+   FOREIGN KEY (price_history_id) REFERENCES auto_post(id)
 );
 
 
