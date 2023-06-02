@@ -1,12 +1,12 @@
 package ru.job4j.cars.repository;
 
 import lombok.AllArgsConstructor;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import org.springframework.stereotype.Repository;
 import ru.job4j.cars.model.User;
 
 import java.util.*;
 
+@Repository
 @AllArgsConstructor
 public class UserRepository {
 
