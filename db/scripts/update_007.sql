@@ -6,15 +6,13 @@ CREATE TABLE IF NOT EXISTS engine (
 CREATE TABLE IF NOT EXISTS car (
     id SERIAL PRIMARY KEY,
     name TEXT,
-    engine_id INT,
-    FOREIGN KEY (engine_id) UNIQUE REFERENCES engine (id)
-);
+    engine_id INT UNIQUE REFERENCES engine (id)
+ );
 
 CREATE TABLE IF NOT EXISTS owners (
     id SERIAL PRIMARY KEY,
     name TEXT,
-    user_id INT,
-    FOREIGN KEY (user_id) REFERENCES auto_user (id)
+    user_id INT REFERENCES auto_user (id)
 );
 
 CREATE TABLE IF NOT EXISTS history_owners (
