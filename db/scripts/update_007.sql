@@ -28,4 +28,6 @@ CREATE TABLE IF NOT EXISTS history (
     endAt Timestamp
 );
 
-ALTER TABLE auto_post ADD COLUMN car_id INT REFERENCES car(id);
+ALTER TABLE auto_post ADD COLUMN car_id INT not null unique REFERENCES car(id);
+
+ALTER TABLE auto_post ADD COLUMN history_id INT not null unique REFERENCES history(id);
