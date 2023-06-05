@@ -36,6 +36,7 @@ public class Post {
     @OneToOne
     @JoinColumn(name = "history_id")
     private History history;
-
-    private byte[] photo;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "post_id")
+    private List<File> photo;
 }
