@@ -36,4 +36,6 @@ public class Post {
     @OneToOne
     @JoinColumn(name = "history_id")
     private History history;
+
+    private byte[] photo;
 }
