@@ -21,8 +21,8 @@ public class Car {
     @JoinColumn(name = "engine_id")
     private Engine engine;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
+    @OneToOne
+    @JoinColumn(name = "owner_id")
     private Owner owner;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

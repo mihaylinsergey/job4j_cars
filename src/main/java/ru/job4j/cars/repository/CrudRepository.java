@@ -4,34 +4,51 @@ import lombok.AllArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+@Repository
 @AllArgsConstructor
 public class CrudRepository {
     private final SessionFactory sf;
 
-    public void run(Consumer<Session> command) {
-        tx(session -> {
-                    command.accept(session);
-                    return null;
-                }
-        );
+    public boolean run(Consumer<Session> command) {
+        boolean result = true;
+        try {
+            tx(session -> {
+                        command.accept(session);
+                        return null;
+                    }
+            );
+        } catch (Exception e) {
+            result = false;
+        }
+        return result;
     }
 
-    public void run(String query, Map<String, Object> args) {
-        Consumer<Session> command = session -> {
+    public boolean run(String query, Map<String, Object> args) {
+        Function<Session, Boolean> command = session -> {
             var sq = session
                     .createQuery(query);
             for (Map.Entry<String, Object> arg : args.entrySet()) {
                 sq.setParameter(arg.getKey(), arg.getValue());
             }
-            sq.executeUpdate();
+            return sq.executeUpdate() > 0;
         };
-        run(command);
+        return tx(command);
+    }
+
+    public <T> Optional<T> optional(Class<T> cl, int id) {
+        Function<Session, Optional<T>> command = session -> {
+            var sq = session.get(cl, id);
+            return Optional.of(sq);
+        };
+        return tx(command);
     }
 
     public <T> Optional<T> optional(String query, Class<T> cl, Map<String, Object> args) {
@@ -46,13 +63,6 @@ public class CrudRepository {
         return tx(command);
     }
 
-    public <T> List<T> query(String query, Class<T> cl) {
-        Function<Session, List<T>> command = session -> session
-                .createQuery(query, cl)
-                .list();
-        return tx(command);
-    }
-
     public <T> List<T> query(String query, Class<T> cl, Map<String, Object> args) {
         Function<Session, List<T>> command = session -> {
             var sq = session
@@ -62,6 +72,13 @@ public class CrudRepository {
             }
             return sq.list();
         };
+        return tx(command);
+    }
+
+    public <T> List<T> query(String query, Class<T> cl) {
+        Function<Session, List<T>> command = session -> session
+                .createQuery(query, cl)
+                .list();
         return tx(command);
     }
 
