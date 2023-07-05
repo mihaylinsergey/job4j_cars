@@ -13,7 +13,6 @@ import ru.job4j.cars.service.UserService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-
 @ThreadSafe
 @Controller
 @AllArgsConstructor
