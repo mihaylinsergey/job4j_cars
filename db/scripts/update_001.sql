@@ -11,8 +11,9 @@ CREATE TABLE IF NOT EXISTS post_history (
 
 CREATE TABLE IF NOT EXISTS auto_user (
     id SERIAL PRIMARY KEY,
-    login TEXT,
-    password TEXT
+    login varchar unique not null,
+    password varchar not null,
+    phoneNumber varchar not null
 );
 
 CREATE TABLE IF NOT EXISTS owners (
@@ -35,28 +36,28 @@ CREATE TABLE IF NOT EXISTS car (
    UNIQUE (car_id, owner_id)
 );
 
-create table IF NOT EXISTS files (
-    id   serial primary key,
-    name varchar,
-    path varchar unique
-    );
-
 CREATE TABLE IF NOT EXISTS auto_post (
     id SERIAL PRIMARY KEY,
     text TEXT,
     created DATE,
     auto_user_id INT REFERENCES auto_user (id),
     car_id INT unique REFERENCES car(id),
-    post_history_id INT unique REFERENCES post_history(id),
-    file_id INT REFERENCES files(id)
+    post_history_id INT unique REFERENCES post_history(id)
 );
+
+create table IF NOT EXISTS files (
+    id   serial primary key,
+    name varchar,
+    path varchar unique,
+    file_post_id INT REFERENCES auto_post(id) ON DELETE CASCADE
+    );
 
 CREATE TABLE IF NOT EXISTS PRICE_HISTORY(
    id SERIAL PRIMARY KEY,
-   before BIGINT,
-   after BIGINT,
+   before DECIMAL,
+   after DECIMAL,
    created TIMESTAMP WITHOUT TIME ZONE DEFAULT now(),
-   post_id int REFERENCES auto_post(id)
+   post_id int REFERENCES auto_post(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS participates (

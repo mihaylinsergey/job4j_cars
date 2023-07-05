@@ -2,11 +2,11 @@ package ru.job4j.cars.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "auto_post")
@@ -35,19 +35,20 @@ public class Post {
     @JoinColumn(name = "post_history_id")
     private History history;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "file_id")
-    private List<File> photo = new ArrayList<>();
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "file_post_id")
+    private Set<File> photo;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "post_id")
-    private List<PriceHistory> priceHistory = new ArrayList<>();
+    @OneToOne(mappedBy = "post")
+    private PriceHistory priceHistory;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
             name = "participates",
             joinColumns = {@JoinColumn(name = "post_id")},
             inverseJoinColumns = {@JoinColumn(name = "user_id")}
     )
     private List<User> participates = new ArrayList<>();
+
+    private boolean sold;
 }

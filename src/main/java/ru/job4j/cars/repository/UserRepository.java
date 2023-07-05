@@ -1,11 +1,12 @@
 package ru.job4j.cars.repository;
 
 import lombok.AllArgsConstructor;
+import net.jcip.annotations.ThreadSafe;
 import org.springframework.stereotype.Repository;
 import ru.job4j.cars.model.User;
-
 import java.util.*;
 
+@ThreadSafe
 @Repository
 @AllArgsConstructor
 public class UserRepository {
@@ -82,5 +83,11 @@ public class UserRepository {
                 "from User where login = :fLogin", User.class,
                 Map.of("fLogin", login)
         );
+    }
+
+    public Optional<User> findByLoginAndPassword(String login, String password) {
+        return crudRepository.optional(
+                "from User as i where i.login = :fLogin and i.password = :fPassword",
+                User.class, Map.of("fLogin", login, "fPassword", password));
     }
 }

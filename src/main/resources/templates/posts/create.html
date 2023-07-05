@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+    <!--  Зависимости Bootstrap-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
+
+    <title>Create</title>
+</head>
+<body>
+<div class="container-fluid p-0">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <div class="collapse navbar-collapse">
+                <div class="navbar-nav">
+                    <a class="navbar-brand" th:href="@{/posts/create}">Добавить объявление</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <a class="nav-item nav-link" aria-current="page" th:href="@{/posts/index}">Все объявления</a>
+                    <a class="nav-item nav-link" th:href="@{/posts/actual}">За последний день</a>
+                    <a class="nav-item nav-link" th:href="@{/posts/withPhoto}">С фото</a>
+                    <form class="d-flex" th:action="@{/posts/searchBrand}" method="POST"> <input class="form-control mr-2" type="search" name="searchBrand" id="searchBrand" placeholder="Марка" aria-label="Search"> <button class="btn btn-outline-success" type="submit">Поиск</button> </form>
+                </div>
+            </div>
+            <div class="d-flex" th:if="${user.login == 'Гость'}">
+                <a class="nav-link text-secondary me-3" th:href="@{/users/register}">Регистрация</a>
+                <a class="nav-link text-secondary" th:href="@{/users/login}">Войти</a>
+            </div>
+            <div class="d-flex" th:if="${user.login != 'Гость'}">
+                <a class="nav-link text-secondary me-3" href="#" th:text="${user.login}"></a>
+                <a class="nav-link text-secondary" th:href="@{/users/logout}">Выйти</a>
+            </div>
+        </div>
+    </nav>
+
+    <br />
+
+    <div class="container mt-2">
+        <h5>Продайте свой автомобиль</h5>
+    </div>
+    <div class="row pt-3">
+        <div class="card" style="width: 100%">
+            <div class="card-body">
+                <form th:action="@{/posts/create}" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="id" value="0"/>
+                    <div class="form-group">
+                        <label for="brandName">Марка</label>
+                        <input type="text" class="form-control" name="brandName" id="brandName" placeholder="Укажите марку автомобиля">
+                    </div>
+                    <div class="form-group">
+                        <label for="carModelName">Модель</label>
+                        <input type="text" class="form-control" name="carModelName" id="carModelName" placeholder="Укажите модель автомобиля">
+                    </div>
+                    <div class="form-group">
+                        <label for="categoryName">Выберите категорию</label>
+                        <select class="form-control" id="categoryName" name="categoryName"  th:object="${categories}">
+                            <option th:each="category: ${categories}" th:value="${category.id}" th:text="${category.name}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="color">Цвет</label>
+                        <input type="text" class="form-control" name="color" id="color" placeholder="Укажите цвет автомобиля">
+                    </div>
+                    <div class="form-group">
+                        <label for="carBodyName">Выберите тип кузова</label>
+                        <select class="form-control" id="carBodyName" name="carBodyName" th:object="${carBodies}">
+                            <option th:each="carBody: ${carBodies}" th:value="${carBody.id}" th:text="${carBody.name}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="engineName">Тип двигателя</label>
+                        <input type="text" class="form-control" name="engineName" id="engineName" placeholder="Укажите тип двигателя">
+                    </div>
+                    <div class="form-group">
+                        <label for="volume">Объем двигателя</label>
+                        <input type="text" class="form-control" name="volume" id="volume" placeholder="Укажите объем двигателя, л.">
+                    </div>
+                    <div class="form-group">
+                        <label for="power">Мощность двигателя</label>
+                        <input type="text" class="form-control" name="power" id="power" placeholder="Укажите мощность двигателя, л.с.">
+                    </div>
+                    <div class="form-group">
+                        <label for="year">Год выпуска</label>
+                        <input type="text" class="form-control" name="year" id="year" placeholder="Укажите год выпуска автомобиля">
+                    </div>
+                    <div class="form-group">
+                        <label for="mileage">Пробег</label>
+                        <input type="text" class="form-control" name="mileage" id="mileage" placeholder="Укажите пробег автомобиля, км">
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Цена</label>
+                        <input type="text" class="form-control" name="price" id="price" placeholder="Укажите желаемую цену, руб.">
+                    </div>
+                    <div class="mb-3">
+                        <label for="photo" class="form-label">Выберите фотографии автомобиля для загрузки:</label>
+                        <input type="file" name="photo" id="photo" multiple>
+                    </div>
+
+                     <div class="form-group">
+                      <label for="description">Описание</label>
+                     <input type="text" class="form-control" name="description" id="description" placeholder="Текст объявления">
+                     </div>
+                    <button type="submit" class="btn btn-primary mt-3">Сохранить</button>
+                    <div class="col-6"><a class="btn btn-danger mt-3" th:href="@{/posts/index}">Отмена</a></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

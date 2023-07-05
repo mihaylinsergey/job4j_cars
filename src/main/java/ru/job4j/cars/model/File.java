@@ -1,7 +1,6 @@
 package ru.job4j.cars.model;
 
 import lombok.Data;
-
 import javax.persistence.*;
 
 @Entity
@@ -16,6 +15,9 @@ public class File {
     private String name;
 
     private String path;
+
+    public File() {
+    }
 
     public File(String name, String path) {
         this.name = name;
