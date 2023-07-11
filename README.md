@@ -18,7 +18,7 @@ ___
 + Bootstrap 5,
 + Liquibase 4.15.0,
 + PostgreSQL 14,
-+ Рibernate 5.6.11.Final;
++ Hibernate 5.6.11.Final;
 ___
 ### Требования к окружению:
 + Java 17,
