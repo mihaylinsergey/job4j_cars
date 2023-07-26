@@ -9,9 +9,8 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.job4j.cars.dto.FileDto;
 import ru.job4j.cars.dto.PostDto;
 import ru.job4j.cars.model.User;
-import ru.job4j.cars.service.CarBodyService;
-import ru.job4j.cars.service.CategoryService;
-import ru.job4j.cars.service.PostService;
+import ru.job4j.cars.service.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +23,9 @@ public class PostController {
     private final PostService postService;
     private final CategoryService categoryService;
     private final CarBodyService carBodyService;
+    private final BrandService brandService;
+    private final CarModelService carModelService;
+    private final CarColorService carColorService;
 
     @GetMapping("/index")
     public String getIndex(Model model) {
@@ -34,7 +36,10 @@ public class PostController {
     @GetMapping("/create")
     public String getCreationPage(Model model) {
         model.addAttribute("categories", categoryService.findAll())
-                .addAttribute("carBodies", carBodyService.findAll());
+                .addAttribute("carBodies", carBodyService.findAll())
+                .addAttribute("brandNames", brandService.findAll())
+                .addAttribute("carModelNames", carModelService.findAll())
+                .addAttribute("colorNames", carColorService.findAll());
         return "posts/create";
     }
 
@@ -90,14 +95,23 @@ public class PostController {
         var postDtoOptional = postService.findById(id);
         model.addAttribute("post", postDtoOptional.get())
                 .addAttribute("categories", categoryService.findAll())
-                .addAttribute("carBodies", carBodyService.findAll());
+                .addAttribute("carBodies", carBodyService.findAll())
+                .addAttribute("brandNames", brandService.findAll())
+                .addAttribute("carModelNames", carModelService.findAll())
+                .addAttribute("colorNames", carColorService.findAll());
         return "posts/update";
     }
 
     @PostMapping("/update")
-    public String updatePost(@ModelAttribute PostDto post, Model model) {
+    public String updatePost(@ModelAttribute PostDto post, @RequestParam List<MultipartFile> photo, Model model) {
         try {
-            postService.update(post);
+            List<FileDto> list = new ArrayList<>();
+            for (var i : photo) {
+                list.add(new FileDto(i.getOriginalFilename(), i.getBytes()));
+            }
+            if (!postService.update(post, list)) {
+                throw new Exception("Обновить объявление не удалось");
+            }
             return "redirect:/posts/index";
         } catch (Exception exception) {
             model.addAttribute("message", exception.getMessage());
@@ -106,14 +120,20 @@ public class PostController {
     }
 
     @GetMapping("/sold/{postId}")
-    public String makeItSold(@PathVariable("postId") int id) {
-        postService.makeItSold(id);
+    public String makeItSold(@PathVariable("postId") int id, Model model) {
+        if (!postService.makeItSold(id)) {
+            model.addAttribute("message", "Изменить статус объявления не удалось");
+            return "errors/404";
+        }
         return "redirect:/posts/index";
     }
 
     @GetMapping("/delete/{postId}")
-    public String delete(@PathVariable("postId") int id) {
-        postService.delete(id);
+    public String delete(@PathVariable("postId") int id, Model model) {
+        if (!postService.delete(id)) {
+            model.addAttribute("message", "Удалить объявление не удалось");
+            return "errors/404";
+        }
         return "redirect:/posts/index";
     }
 }

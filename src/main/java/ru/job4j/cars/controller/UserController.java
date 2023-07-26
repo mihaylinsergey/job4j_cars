@@ -27,15 +27,11 @@ public class UserController {
 
     @PostMapping("/register")
     public String register(@ModelAttribute User user, Model model) {
-        String rsl;
-        try {
-            userService.create(user);
-            rsl = "redirect:/posts/index";
-        } catch (Exception exception) {
-            model.addAttribute("message", "Пользователь с login " + user.getLogin() + " уже существует");
-            rsl = "errors/404";
+        var userOptional = userService.create(user);
+        if (userOptional.isEmpty()) {
+            return "redirect:/users/registration";
         }
-        return rsl;
+        return "redirect:/posts/index";
     }
 
     @GetMapping("/login")

@@ -1,7 +1,7 @@
 package ru.job4j.cars.model;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -10,6 +10,9 @@ import java.util.Set;
 @Table(name = "car")
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Builder(builderMethodName = "of")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Car {
 
     @Id
@@ -35,6 +38,7 @@ public class Car {
     joinColumns = {@JoinColumn(name = "car_id")},
     inverseJoinColumns = {@JoinColumn(name = "owner_id")}
     )
+    @Builder.Default
     private Set<Owner> owners = new HashSet<>();
 
     @ManyToOne

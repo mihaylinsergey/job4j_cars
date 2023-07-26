@@ -45,30 +45,39 @@
     <div class="row pt-3">
         <div class="card" style="width: 100%">
             <div class="card-body">
-                <form th:action="@{/posts/update}" method="POST" th:object="${post}">
+                <form th:action="@{/posts/update}" method="POST" th:object="${post}" enctype="multipart/form-data">
                     <input type="hidden" name="id" th:field="*{id}"/>
                     <div class="form-group">
-                        <label for="brandName">Марка</label>
-                        <input type="text" class="form-control" name="brandName" id="brandName" th:field="*{brandName}"/>
+                        <label for="brandName">Выберите марку автомобиля</label>
+                        <select class="form-control" id="brandName" name="brandName"  th:field="*{brandName}">
+                            <option th:each="brand: ${brandNames}" th:value="${brand.id}" th:text="${brand.name}">
+                            </option>
+                        </select>
                     </div>
                     <div class="form-group">
-                        <label for="carModelName">Модель</label>
-                        <input type="text" class="form-control" name="carModelName" id="carModelName" th:field="*{carModelName}">
+                        <label for="carModelName">Выберите модель автомобиля</label>
+                        <select class="form-control" id="carModelName" name="carModelName"  th:field="*{carModelName}">
+                            <option th:each="carModel: ${carModelNames}" th:value="${carModel.id}" th:text="${carModel.name}">
+                            </option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="categoryName">Выберите категорию</label>
-                        <select class="form-control" id="categoryName" name="categoryName"  th:object="${categories}">
+                        <select class="form-control" id="categoryName" name="categoryName"  th:field="*{categoryName}">
                             <option th:each="category: ${categories}" th:value="${category.id}" th:text="${category.name}">
                             </option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="color">Цвет</label>
-                        <input type="text" class="form-control" name="color" id="color" th:field="*{color}">
+                        <label for="colorName">Выберите цвет автомобиля</label>
+                        <select class="form-control" id="colorName" name="colorName"  th:field="*{colorName}">
+                            <option th:each="color: ${colorNames}" th:value="${color.id}" th:text="${color.name}">
+                            </option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="carBodyName">Выберите тип кузова</label>
-                        <select class="form-control" id="carBodyName" name="carBodyName" th:object="${carBodies}">
+                        <select class="form-control" id="carBodyName" name="carBodyName" th:field="*{carBodyName}">
                             <option th:each="carBody: ${carBodies}" th:value="${carBody.id}" th:text="${carBody.name}">
                             </option>
                         </select>
@@ -101,6 +110,10 @@
                     <div class="form-group">
                         <label for="description">Описание</label>
                         <input type="text" class="form-control" name="description" id="description" th:field="*{description}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="photo" class="form-label">Выберите фотографии автомобиля для загрузки:</label>
+                        <input type="file" name="photo" id="photo" multiple>
                     </div>
                     <button type="submit" class="btn btn-primary mt-3">Сохранить</button>
                     <div class="col-6"><a class="btn btn-danger mt-3" th:href="@{/posts/index}">Отмена</a></div>

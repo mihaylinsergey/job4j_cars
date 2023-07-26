@@ -6,6 +6,8 @@ import net.jcip.annotations.ThreadSafe;
 import org.springframework.stereotype.Repository;
 import ru.job4j.cars.model.Brand;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @ThreadSafe
 @Repository
@@ -24,5 +26,12 @@ public class BrandRepository {
 
     public boolean update(Brand brand) {
         return crudRepository.run(session -> session.merge(brand));
+    }
+
+    public Optional<Brand> findById(int id) {
+        return crudRepository.optional("""
+            from Brand i 
+            where i.id = :fId
+            """, Brand.class, Map.of("fId", id));
     }
 }

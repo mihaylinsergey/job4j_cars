@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.job4j.cars.model.CarColor;
 import ru.job4j.cars.repository.CarColorRepository;
 import java.util.List;
+import java.util.Optional;
 
 @ThreadSafe
 @Service
@@ -24,5 +25,9 @@ public class CarColorService {
 
     public boolean update(CarColor carColor) {
         return carColorRepository.update(carColor);
+    }
+
+    public Optional<CarColor> findById(int id) {
+        return carColorRepository.findById(id);
     }
 }

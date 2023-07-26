@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.job4j.cars.model.Brand;
 import ru.job4j.cars.repository.BrandRepository;
 import java.util.List;
+import java.util.Optional;
 
 @ThreadSafe
 @Service
@@ -24,5 +25,9 @@ public class BrandService {
 
     public boolean update(Brand brand) {
         return brandRepository.update(brand);
+    }
+
+    public Optional<Brand> findById(int id) {
+        return brandRepository.findById(id);
     }
 }

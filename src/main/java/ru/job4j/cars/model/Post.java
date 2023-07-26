@@ -1,7 +1,7 @@
 package ru.job4j.cars.model;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,6 +12,9 @@ import java.util.Set;
 @Table(name = "auto_post")
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Builder(builderMethodName = "of")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Post {
 
     @Id
@@ -21,7 +24,8 @@ public class Post {
 
     private String text;
 
-    private LocalDateTime created;
+    @Builder.Default
+    private LocalDateTime created = LocalDateTime.now();
 
     @ManyToOne
     @JoinColumn(name = "auto_user_id")
@@ -48,6 +52,7 @@ public class Post {
             joinColumns = {@JoinColumn(name = "post_id")},
             inverseJoinColumns = {@JoinColumn(name = "user_id")}
     )
+    @Builder.Default
     private List<User> participates = new ArrayList<>();
 
     private boolean sold;

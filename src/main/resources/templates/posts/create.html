@@ -49,12 +49,18 @@
                 <form th:action="@{/posts/create}" method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="id" value="0"/>
                     <div class="form-group">
-                        <label for="brandName">Марка</label>
-                        <input type="text" class="form-control" name="brandName" id="brandName" placeholder="Укажите марку автомобиля">
+                        <label for="brandName">Выберите марку автомобиля</label>
+                        <select class="form-control" id="brandName" name="brandName"  th:object="${brandNames}">
+                            <option th:each="brandName: ${brandNames}" th:value="${brandName.id}" th:text="${brandName.name}">
+                            </option>
+                        </select>
                     </div>
                     <div class="form-group">
-                        <label for="carModelName">Модель</label>
-                        <input type="text" class="form-control" name="carModelName" id="carModelName" placeholder="Укажите модель автомобиля">
+                        <label for="carModelName">Выберите модель автомобиля</label>
+                        <select class="form-control" id="carModelName" name="carModelName"  th:object="${carModelNames}">
+                            <option th:each="carModelName: ${carModelNames}" th:value="${carModelName.id}" th:text="${carModelName.name}">
+                            </option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="categoryName">Выберите категорию</label>
@@ -64,8 +70,11 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="color">Цвет</label>
-                        <input type="text" class="form-control" name="color" id="color" placeholder="Укажите цвет автомобиля">
+                        <label for="colorName">Выберите цвет автомобиля</label>
+                        <select class="form-control" id="colorName" name="colorName"  th:object="${colorNames}">
+                            <option th:each="colorName: ${colorNames}" th:value="${colorName.id}" th:text="${colorName.name}">
+                            </option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="carBodyName">Выберите тип кузова</label>
@@ -75,7 +84,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="engineName">Тип двигателя</label>
+                        <label for="engineName">Укажите тип двигателя</label>
                         <input type="text" class="form-control" name="engineName" id="engineName" placeholder="Укажите тип двигателя">
                     </div>
                     <div class="form-group">
@@ -104,7 +113,7 @@
                     </div>
 
                      <div class="form-group">
-                      <label for="description">Описание</label>
+                      <label for="description">Добавьте описание</label>
                      <input type="text" class="form-control" name="description" id="description" placeholder="Текст объявления">
                      </div>
                     <button type="submit" class="btn btn-primary mt-3">Сохранить</button>

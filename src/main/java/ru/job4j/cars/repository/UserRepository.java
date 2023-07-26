@@ -18,25 +18,29 @@ public class UserRepository {
      * @param user пользователь.
      * @return пользователь с id.
      */
-    public User create(User user) {
-        crudRepository.run(session -> session.persist(user));
-        return user;
+    public Optional<User> create(User user) {
+        try {
+            crudRepository.run(session -> session.persist(user));
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+        return Optional.of(user);
     }
 
     /**
      * Обновить в базе пользователя.
      * @param user пользователь.
      */
-    public void update(User user) {
-        crudRepository.run(session -> session.merge(user));
+    public boolean update(User user) {
+        return crudRepository.run(session -> session.merge(user));
     }
 
     /**
      * Удалить пользователя по id.
      * @param userId ID
      */
-    public void delete(int userId) {
-        crudRepository.run(
+    public boolean delete(int userId) {
+        return crudRepository.run(
                 "delete from User where id = :fId",
                 Map.of("fId", userId)
         );

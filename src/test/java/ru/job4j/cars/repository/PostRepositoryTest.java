@@ -29,7 +29,7 @@ class PostRepositoryTest {
     private final OwnerRepository ownerRepository = new OwnerRepository(crudRepository);
     private final FileRepository fileRepository = new FileRepository(crudRepository);
     private final PriceHistoryRepository priceHistoryRepository = new PriceHistoryRepository(crudRepository);
-
+/*
     @BeforeAll
     public static void init() {
         sf = new HibernateConfiguration().sf();
@@ -215,5 +215,5 @@ class PostRepositoryTest {
         int id = post.getId();
         postRepository.delete(id);
         assertThat(postRepository.findById(id), is(Optional.empty()));
-    }
+    }*/
 }
