@@ -110,7 +110,8 @@ public class PostController {
                 list.add(new FileDto(i.getOriginalFilename(), i.getBytes()));
             }
             if (!postService.update(post, list)) {
-                throw new Exception("Обновить объявление не удалось");
+                model.addAttribute("message", "Обновить объявление не удалось");
+                return "errors/404";
             }
             return "redirect:/posts/index";
         } catch (Exception exception) {
